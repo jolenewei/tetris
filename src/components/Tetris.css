@@ -1,0 +1,51 @@
+.Tetris {
+    position: relative;
+}
+
+.start-button {
+    padding: 15px 30px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    background-color: #6a0dad;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.start-button:hover {
+    background-color: #520a80;
+}
+
+.game-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.hold-container {
+    background-color: #222;
+    padding: 20px;
+    border: 2px solid white;
+    color: white;
+    text-align: center;
+    width: 120px;
+    height: 120px;
+}
+
+.empty-hold {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-size: 1.2rem;
+    color: gray;
+}
+
+.side-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
