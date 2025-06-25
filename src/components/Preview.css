@@ -12,6 +12,6 @@
     grid-gap: 2px;
     grid-template-rows: repeat(4, 1fr);
     grid-template-columns: repeat(4, 1fr);
-    width: 11vw;
-    height: 11vw;
+    width: 7vw;
+    height: 7vw;
 }
