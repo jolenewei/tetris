@@ -25,25 +25,6 @@
     gap: 20px;
 }
 
-.hold-container {
-    background-color: #222;
-    padding: 20px;
-    border: 2px solid white;
-    color: white;
-    text-align: center;
-    width: 120px;
-    height: 120px;
-}
-
-.empty-hold {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    font-size: 1.2rem;
-    color: gray;
-}
-
 .side-panel {
     display: flex;
     flex-direction: column;

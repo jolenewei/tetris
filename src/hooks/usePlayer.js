@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
-import { randomTetromino } from "/src/business/Tetrominoes";
+import { useState, useCallback } from "react";
+
+import { randomTetromino } from "../business/Tetrominoes";
 
 const buildPlayer = (previous) => {
   let tetrominoes;
@@ -10,7 +11,7 @@ const buildPlayer = (previous) => {
   } else {
     tetrominoes = Array(5)
       .fill(0)
-      .map(() => randomTetromino());
+      .map((_) => randomTetromino());
   }
 
   return {
@@ -18,52 +19,16 @@ const buildPlayer = (previous) => {
     isFastDropping: false,
     position: { row: 0, column: 4 },
     tetrominoes,
-    tetromino: tetrominoes.pop() || randomTetromino(),
+    tetromino: tetrominoes.pop()
   };
 };
 
-export const usePlayer = (gameStarted) => {
-  const [player, setPlayer] = useState(null);
-  const [heldTetromino, setHeldTetromino] = useState(null);
-  const [hasSwapped, setHasSwapped] = useState(false);
+export const usePlayer = () => {
+  const [player, setPlayer] = useState(buildPlayer());
 
   const resetPlayer = useCallback(() => {
-    if (gameStarted) {
-      setPlayer(buildPlayer());
-      setHasSwapped(false); // Allow swapping again
-    }
-  }, [gameStarted]);
+    setPlayer((prev) => buildPlayer(prev));
+  }, []);
 
-  const holdTetromino = () => {
-    if (hasSwapped || !player) return; // Prevent multiple swaps until the next block lands
-
-    console.log("Holding tetromino:", player.tetromino);
-
-    setHasSwapped(true); // Prevent additional swaps in the same round
-
-    if (!heldTetromino) {
-      setHeldTetromino(player.tetromino);
-      setPlayer(buildPlayer(player)); // Get a new Tetromino
-    } else {
-      setPlayer((prev) => ({
-        ...prev,
-        tetromino: heldTetromino,
-        position: { row: 0, column: 4 }, // Reset position
-        collided: false,
-      }));
-      setHeldTetromino(player.tetromino);
-    }
-  };
-
-  useEffect(() => {
-    if (gameStarted) {
-      setPlayer(buildPlayer());
-      setHasSwapped(false); // Reset swap permission
-    } else {
-      setPlayer(null);
-      setHeldTetromino(null);
-    }
-  }, [gameStarted]);
-
-  return [player, setPlayer, resetPlayer, holdTetromino, heldTetromino];
+  return [player, setPlayer, resetPlayer];
 };

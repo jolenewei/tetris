@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { buildBoard, nextBoard } from "/src/business/Board";
+import { buildBoard, nextBoard } from "../business/Board";
 
 export const useBoard = ({
   rows,

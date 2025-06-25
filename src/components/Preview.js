@@ -1,10 +1,10 @@
 import "./Preview.css";
 import React from "react";
 
-import { buildBoard } from "/src/business/Board";
-import { transferToBoard } from "/src/business/Tetrominoes";
+import { buildBoard } from "../business/Board";
+import { transferToBoard } from "../business/Tetrominoes";
 
-import BoardCell from "/src/components/BoardCell";
+import BoardCell from "../components/BoardCell";
 
 const Preview = ({ tetromino, index }) => {
   const { shape, className } = tetromino;
@@ -18,7 +18,7 @@ const Preview = ({ tetromino, index }) => {
     isOccupied: false,
     position: { row: 0, column: 0 },
     rows: board.rows,
-    shape,
+    shape
   });
 
   return (

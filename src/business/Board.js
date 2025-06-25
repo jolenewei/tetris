@@ -1,7 +1,8 @@
-import { defaultCell } from "/src/business/Cell";
-import { movePlayer } from "/src/business/PlayerController";
-import { transferToBoard } from "/src/business/Tetrominoes";
+import { defaultCell } from "../business/Cell";
+import { movePlayer } from "../business/PlayerController";
+import { transferToBoard } from "../business/Tetrominoes";
 
+// build empty game board
 export const buildBoard = ({ rows, columns }) => {
   const builtRows = Array.from({ length: rows }, () =>
     Array.from({ length: columns }, () => ({ ...defaultCell }))
@@ -11,12 +12,13 @@ export const buildBoard = ({ rows, columns }) => {
     rows: builtRows,
     size: { rows, columns },
   };
-};
+}
 
+// find lowest position the current tetromino can fall to without collision
 const findDropPosition = ({ board, position, shape }) => {
   let max = board.size.rows - position.row + 1;
   let row = 0;
-
+  // attempt droppping from current position until collision
   for (let i = 0; i < max; i++) {
     const delta = { row: i, column: 0 };
     const result = movePlayer({ delta, position, shape, board });
@@ -32,30 +34,23 @@ const findDropPosition = ({ board, position, shape }) => {
   return { ...position, row };
 };
 
+// build new board state based on current player and board status
 export const nextBoard = ({ board, player, resetPlayer, addLinesCleared }) => {
-  if (!player || !player.tetromino || !player.position) {
-    return {
-      rows: board.rows.map((row) => row.map((cell) => ({ ...defaultCell }))),
-      size: { ...board.size },
-    };
-  }
-
   const { tetromino, position } = player;
 
-  // Copy and clear spaces used by pieces that
-  // hadn't collided and occupied spaces permanently
+  // create a copy of the board where non-occupied cells are reset
   let rows = board.rows.map((row) =>
     row.map((cell) => (cell.occupied ? cell : { ...defaultCell }))
   );
 
-  // Drop position
+  // get a drop position for ghost piece
   const dropPosition = findDropPosition({
     board,
     position,
     shape: tetromino.shape,
   });
 
-  // Place ghost
+  // add ghost piece to board (only visible if not fast dropping)
   const className = `${tetromino.className} ${
     player.isFastDropping ? "" : "ghost"
   }`;
@@ -67,19 +62,18 @@ export const nextBoard = ({ board, player, resetPlayer, addLinesCleared }) => {
     shape: tetromino.shape,
   });
 
-  // Place the piece.
-  // If it collided, mark the board cells as collided
+  // place actual piece on board
   if (!player.isFastDropping) {
     rows = transferToBoard({
       className: tetromino.className,
-      isOccupied: player.collided,
+      isOccupied: player.collided, // only make it permanent if it collided
       position,
       rows,
       shape: tetromino.shape,
     });
   }
 
-  // Check for cleared lines
+  // clear full rows and count how many were cleared
   const blankRow = rows[0].map((_) => ({ ...defaultCell }));
   let linesCleared = 0;
   rows = rows.reduce((acc, row) => {
@@ -93,22 +87,23 @@ export const nextBoard = ({ board, player, resetPlayer, addLinesCleared }) => {
     return acc;
   }, []);
 
+  // notify parent how many lines were cleared
   if (linesCleared > 0) {
     addLinesCleared(linesCleared);
   }
 
-  // If we collided, reset the player!
+  // if a piece has landed, reset player to the top with a new piece
   if (player.collided || player.isFastDropping) {
     resetPlayer();
   }
 
-  // Return the next board
   return {
     rows,
     size: { ...board.size },
   };
 };
 
+// check if placing a shape at a given position causes a collision
 export const hasCollision = ({ board, position, shape }) => {
   for (let y = 0; y < shape.length; y++) {
     const row = y + position.row;
@@ -127,10 +122,10 @@ export const hasCollision = ({ board, position, shape }) => {
       }
     }
   }
-
   return false;
 };
 
+// check if the shape is fully inside the board (not outside of bounds)
 export const isWithinBoard = ({ board, position, shape }) => {
   for (let y = 0; y < shape.length; y++) {
     const row = y + position.row;

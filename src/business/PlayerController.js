@@ -1,6 +1,6 @@
-import { hasCollision, isWithinBoard } from "/src/business/Board";
-import { rotate } from "/src/business/Tetrominoes";
-import { Action } from "/src/business/Input";
+import { hasCollision, isWithinBoard } from "../business/Board";
+import { rotate } from "../business/Tetrominoes";
+import { Action } from "../business/Input";
 
 const attemptRotation = ({ board, player, setPlayer }) => {
   const shape = rotate({
@@ -74,7 +74,7 @@ const attemptMovement = ({ board, action, player, setPlayer, setGameOver }) => {
     board,
   });
 
-  // Did we collide immediately? If so, game over, man!
+// if tetriminoes collide, game over
   const isGameOver = collided && player.position.row === 0;
   if (isGameOver) {
     setGameOver(isGameOver);
@@ -94,15 +94,11 @@ export const playerController = ({
   player,
   setPlayer,
   setGameOver,
-  /* heldTetromino,
-  setHeldTetromino, */
 }) => {
   if (!action) return;
 
   if (action === Action.Rotate) {
     attemptRotation({ board, player, setPlayer });
-    /* } else if (action === Action.Hold) {
-    attemptHold({ player, setPlayer, heldTetromino, setHeldTetromino }); */
   } else {
     attemptMovement({ board, player, setPlayer, action, setGameOver });
   }
