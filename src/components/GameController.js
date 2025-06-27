@@ -1,8 +1,6 @@
-import "./GameController.css";
-
+import { useEffect } from "react";
 import { Action, actionForKey, actionIsDrop } from "../business/Input";
 import { playerController } from "../business/PlayerController";
-
 import { useDropTime } from "../hooks/useDropTime";
 import { useInterval } from "../hooks/useInterval";
 
@@ -12,61 +10,52 @@ const GameController = ({
   player,
   setGameOver,
   setPlayer,
+  paused,
 }) => {
-  const [dropTime, pauseDropTime, resumeDropTime] = useDropTime({
-    gameStats,
-  });
+  const [dropTime, pauseDropTime, resumeDropTime] = useDropTime({ gameStats });
 
   useInterval(() => {
-    if (dropTime) {
+    if (dropTime && !paused) {
       handleInput({ action: Action.SlowDrop });
     }
   }, dropTime);
 
-  const onKeyUp = ({ code }) => {
-    const action = actionForKey(code);
-    if (actionIsDrop(action)) resumeDropTime();
+  const handleInput = ({ action }) => {
+    playerController({ action, board, player, setPlayer, setGameOver });
   };
 
-  const onKeyDown = ({ code }) => {
-    const action = actionForKey(code);
+  const handleKeyDown = (event) => {
+    if (paused) return;
 
+    const action = actionForKey(event.code);
     if (action === Action.Pause) {
-      if (dropTime) {
-        pauseDropTime();
-      } else {
-        resumeDropTime();
-      }
+      pauseDropTime();
     } else if (action === Action.Quit) {
       setGameOver(true);
     } else {
       if (actionIsDrop(action)) pauseDropTime();
-      if (!dropTime) {
-        return;
-      }
       handleInput({ action });
     }
   };
 
-  const handleInput = ({ action }) => {
-    playerController({
-      action,
-      board,
-      player,
-      setPlayer,
-      setGameOver,
-    });
+  const handleKeyUp = (event) => {
+    if (paused) return;
+
+    const action = actionForKey(event.code);
+    if (actionIsDrop(action)) resumeDropTime();
   };
 
-  return (
-    <input
-      className="GameController"
-      type="text"
-      onKeyDown={onKeyDown}
-      onKeyUp={onKeyUp}
-      autoFocus
-    />
-  );
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, [player, paused]);
+
+  return null;
 };
 
 export default GameController;
