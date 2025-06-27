@@ -6,7 +6,6 @@ export const Action = {
   Right: "Right",
   Rotate: "Rotate",
   SlowDrop: "SlowDrop",
-  Hold: "Hold",
 };
 
 export const Key = {
@@ -17,7 +16,6 @@ export const Key = {
   KeyQ: Action.Quit,
   KeyP: Action.Pause,
   Space: Action.FastDrop,
-  KeyC: Action.Hold,
 };
 
 export const actionIsDrop = (action) =>

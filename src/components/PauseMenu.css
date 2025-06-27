@@ -1,4 +1,6 @@
 .pause-menu {
+    display: flex;
+    flex-direction: column;
     position: absolute;
     top: 30%;
     left: 50%;
@@ -9,11 +11,19 @@
     box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.2);
     z-index: 100;
     text-align: center;
+    padding-left: 50px;
+    padding-right: 50px;
 }
 
 .pause-menu button {
-    margin: 1rem;
-    padding: 0.6rem 1.2rem;
+    padding: 15px 50px;
     font-size: 1rem;
+    font-weight: bold;
+    color: white;
+    background-color: #6a0dad;
+    border: none;
+    border-radius: 10px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 2rem;
 }

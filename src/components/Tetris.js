@@ -24,7 +24,7 @@ const Tetris = ({ rows, columns, setGameOver }) => {
     <div className="Tetris">
       {!paused && (
         <button className="pause-button" onClick={() => setPaused(true)}>
-          Pause
+          | |
         </button>
       )}
 
@@ -50,7 +50,7 @@ const Tetris = ({ rows, columns, setGameOver }) => {
 
 const GameInstance = ({ rows, columns, paused, setPaused, setGameOver }) => {
   const [gameStats, addLinesCleared] = useGameStats();
-  const [player, setPlayer, resetPlayer, holdTetromino, heldTetromino] =
+  const [player, setPlayer, resetPlayer] =
     usePlayer(true);
   const [board, setBoard] = useBoard({
     rows,
@@ -62,23 +62,6 @@ const GameInstance = ({ rows, columns, paused, setPaused, setGameOver }) => {
 
   return (
     <div className="game-container">
-      {/* HOLD AREA */}
-      <div className="hold-container">
-        <h3>HOLD</h3>
-        {heldTetromino ? (
-          <Board
-            board={
-              <Board
-                board={Array(4).fill(Array(4).fill(0))}
-                tetromino={heldTetromino}
-              />
-            }
-            tetromino={heldTetromino}
-          />
-        ) : (
-          <div className="empty-hold">Empty</div>
-        )}
-      </div>
 
       {/* MAIN BOARD */}
       <Board board={board} />
@@ -96,7 +79,6 @@ const GameInstance = ({ rows, columns, paused, setPaused, setGameOver }) => {
         player={player}
         setGameOver={setGameOver}
         setPlayer={setPlayer}
-        holdTetromino={holdTetromino}
         paused={paused}
       />
     </div>
