@@ -5,45 +5,76 @@ import GameController from "../components/GameController";
 import GameStats from "../components/GameStats";
 import Previews from "../components/Previews";
 import PauseMenu from "../components/PauseMenu";
+import MenuScreen from "../components/MenuScreen";
 
 import { useState, useEffect } from "react";
 import { useBoard } from "../hooks/useBoard";
 import { useGameStats } from "../hooks/useGameStats";
 import { usePlayer } from "../hooks/usePlayer";
 
-const Tetris = ({ rows, columns, setGameOver }) => {
+
+const Tetris = ({ rows, columns, setGameOver, setHighScore, isMenuVisible }) => {
   const [paused, setPaused] = useState(false);
   const [gameKey, setGameKey] = useState(0); // used to force a game restart
+  const [score, setScore] = useState(0); // track score
+  const [showMenu, setShowMenu] = useState(true);
+  const [player, setPlayer, resetPlayer] = usePlayer();
+  // track score updates from GameStats
+  const [gameStats, addLinesCleared] = useGameStats();
+  
+  useEffect(() => {
+    setScore(gameStats.score);
+  }, [gameStats.score]);
+
+  // on game over, update high score
+  useEffect(() => {
+    return () => {
+      setHighScore(prev => Math.max(prev, score));
+    };
+  }, [score, setHighScore]);
 
   const resetGame = () => {
-    setGameKey(prev => prev + 1); // this will remount the entire game state
-    setPaused(false); // close the pause menu
+    setGameKey(prev => prev + 1); // force restart
+    setPaused(false); // unpause
+    setShowMenu(false); // hide main menu
   };
 
   return (
     <div className="Tetris">
-      {!paused && (
+      {!paused && !showMenu && (
         <button className="pause-button" onClick={() => setPaused(true)}>
           | |
         </button>
       )}
 
-      {paused && (
+      {paused && !showMenu && (
         <PauseMenu
           onResume={() => setPaused(false)}
-          onRestart={resetGame} // ✅ now triggers a full reset, not game over
+          onRestart={resetGame}
+          onMenu={() => {
+            setPaused(false);
+            setShowMenu(true);
+          }}
         />
       )}
 
-      {/* Key forces reset when needed */}
-      <GameInstance
-        key={gameKey}
-        rows={rows}
-        columns={columns}
-        paused={paused}
-        setPaused={setPaused}
-        setGameOver={setGameOver}
-      />
+      {showMenu && (
+        <MenuScreen
+          highScore={score}
+          onStartGame={resetGame}
+        />
+      )}
+
+      {!showMenu && (
+        <GameInstance
+          key={gameKey}
+          rows={rows}
+          columns={columns}
+          paused={paused}
+          setPaused={setPaused}
+          setGameOver={setGameOver}
+        />
+      )}
     </div>
   );
 };
