@@ -1,5 +1,4 @@
 import React from "react";
-
 import "./GameStats.css";
 
 const GameStats = ({ gameStats }) => {

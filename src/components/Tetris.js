@@ -12,103 +12,90 @@ import { useBoard } from "../hooks/useBoard";
 import { useGameStats } from "../hooks/useGameStats";
 import { usePlayer } from "../hooks/usePlayer";
 
-
-const Tetris = ({ rows, columns, setGameOver, setHighScore, isMenuVisible }) => {
+const Tetris = ({ rows, columns }) => {
   const [paused, setPaused] = useState(false);
-  const [gameKey, setGameKey] = useState(0); // used to force a game restart
-  const [score, setScore] = useState(0); // track score
-  const [showMenu, setShowMenu] = useState(true);
-  const [player, setPlayer, resetPlayer] = usePlayer();
-  // track score updates from GameStats
-  const [gameStats, addLinesCleared] = useGameStats();
-  
-  useEffect(() => {
-    setScore(gameStats.score);
-  }, [gameStats.score]);
-
-  // on game over, update high score
-  useEffect(() => {
-    return () => {
-      setHighScore(prev => Math.max(prev, score));
-    };
-  }, [score, setHighScore]);
+  const [menuVisible, setMenuVisible] = useState(true);
+  const [gameKey, setGameKey] = useState(0); // used to restart game
+  const [highScore, setHighScore] = useState(0);
 
   const resetGame = () => {
-    setGameKey(prev => prev + 1); // force restart
-    setPaused(false); // unpause
-    setShowMenu(false); // hide main menu
+    setGameKey(prev => prev + 1);
+    setPaused(false);
+    setMenuVisible(false);
   };
 
   return (
     <div className="Tetris">
-      {!paused && !showMenu && (
+      {menuVisible && (
+        <MenuScreen
+          highScore={highScore}
+          onStartGame={resetGame}
+          gameOver={gameKey > 0} // only show game over after game was played at least once
+        />
+      )}
+
+      {!menuVisible && !paused && (
         <button className="pause-button" onClick={() => setPaused(true)}>
           | |
         </button>
       )}
 
-      {paused && !showMenu && (
+      {!menuVisible && paused && (
         <PauseMenu
           onResume={() => setPaused(false)}
           onRestart={resetGame}
           onMenu={() => {
             setPaused(false);
-            setShowMenu(true);
+            setMenuVisible(true);
           }}
         />
       )}
 
-      {showMenu && (
-        <MenuScreen
-          highScore={score}
-          onStartGame={resetGame}
-        />
-      )}
-
-      {!showMenu && (
+      {!menuVisible && (
         <GameInstance
           key={gameKey}
           rows={rows}
           columns={columns}
           paused={paused}
           setPaused={setPaused}
-          setGameOver={setGameOver}
+          onGameOver={() => setMenuVisible(true)}
+          updateHighScore={(score) => setHighScore(prev => Math.max(prev, score))}
         />
       )}
     </div>
   );
 };
 
-const GameInstance = ({ rows, columns, paused, setPaused, setGameOver }) => {
+const GameInstance = ({ rows, columns, paused, setPaused, onGameOver, updateHighScore }) => {
   const [gameStats, addLinesCleared] = useGameStats();
-  const [player, setPlayer, resetPlayer] =
-    usePlayer(true);
-  const [board, setBoard] = useBoard({
+  const [player, setPlayer, resetPlayer] = usePlayer(true);
+  const [board] = useBoard({
     rows,
     columns,
     player: paused ? null : player,
     resetPlayer,
-    addLinesCleared
+    addLinesCleared,
+    setGameOver: onGameOver,
   });
+
+  useEffect(() => {
+    return () => {
+      updateHighScore(gameStats.score);
+    };
+  }, [gameStats.score, updateHighScore]);
 
   return (
     <div className="game-container">
-
-      {/* MAIN BOARD */}
       <Board board={board} />
-
-      {/* SIDE PANEL */}
       <div className="side-panel">
         <GameStats gameStats={gameStats} />
         <Previews tetrominoes={player?.tetrominoes || []} />
       </div>
-
-      {/* GAME LOGIC */}
       <GameController
         board={board}
         gameStats={gameStats}
         player={player}
-        setGameOver={setGameOver}
+        setGameOver={onGameOver}
         setPlayer={setPlayer}
         paused={paused}
       />

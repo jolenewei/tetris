@@ -7,6 +7,7 @@ export const useBoard = ({
   player,
   resetPlayer,
   addLinesCleared,
+  setGameOver,
 }) => {
   const [board, setBoard] = useState(buildBoard({ rows, columns }));
 
@@ -16,15 +17,16 @@ export const useBoard = ({
     setBoard((previousBoard) => {
       const safeBoard = previousBoard || buildBoard({ rows, columns });
 
-      const newBoard = nextBoard({
+      return nextBoard({
         board: safeBoard,
         player,
         resetPlayer,
         addLinesCleared,
-      });
-      return newBoard || safeBoard;
+        setGameOver,
+      }) || safeBoard;
     });
-  }, [player, resetPlayer, addLinesCleared]);
+  }, [player, resetPlayer, addLinesCleared, setGameOver, rows, columns]);
 
   return [board];
 };
+

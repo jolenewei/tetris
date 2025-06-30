@@ -35,7 +35,19 @@ const findDropPosition = ({ board, position, shape }) => {
 };
 
 // build new board state based on current player and board status
-export const nextBoard = ({ board, player, resetPlayer, addLinesCleared }) => {
+export const nextBoard = ({ board, player, resetPlayer, addLinesCleared, setGameOver }) => {
+  if (!player || !player.tetromino || !player.position) {
+    return {
+      rows: board.rows.map((row) => row.map((cell) => ({ ...defaultCell }))),
+      size: { ...board.size },
+    };
+  }
+
+  if (hasCollision({ board, position: player.position, shape: player.tetromino.shape })) {
+    setGameOver?.();
+    return board; 
+  }
+  
   const { tetromino, position } = player;
 
   // create a copy of the board where non-occupied cells are reset
@@ -92,18 +104,18 @@ export const nextBoard = ({ board, player, resetPlayer, addLinesCleared }) => {
     addLinesCleared(linesCleared);
   }
 
-  // if a piece has landed, reset player to the top with a new piece
+  // if collided, reset the player
   if (player.collided || player.isFastDropping) {
     resetPlayer();
   }
 
+  // return the next board
   return {
     rows,
     size: { ...board.size },
   };
 };
 
-// check if placing a shape at a given position causes a collision
 export const hasCollision = ({ board, position, shape }) => {
   for (let y = 0; y < shape.length; y++) {
     const row = y + position.row;
@@ -139,6 +151,5 @@ export const isWithinBoard = ({ board, position, shape }) => {
       }
     }
   }
-
   return true;
 };
