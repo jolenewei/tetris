@@ -11,6 +11,11 @@ const GameController = ({
   setGameOver,
   setPlayer,
   paused,
+  hold,
+  setHold,
+  usedHold,
+  setUsedHold,
+  resetPlayer,
 }) => {
   const [dropTime, pauseDropTime, resumeDropTime] = useDropTime({ gameStats });
 
@@ -21,7 +26,20 @@ const GameController = ({
   }, dropTime);
 
   const handleInput = ({ action }) => {
-    playerController({ action, board, player, setPlayer, setGameOver });
+    if (!board || !board.rows) return;
+    
+    playerController({
+      action,
+      board,
+      player,
+      setPlayer,
+      setGameOver,
+      hold,
+      setHold,
+      usedHold,
+      setUsedHold,
+      resetPlayer,
+    });
   };
 
   const handleKeyDown = (event) => {
