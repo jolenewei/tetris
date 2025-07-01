@@ -4,12 +4,17 @@
     box-sizing: border-box;
 }
 
+#root,
+.App,
+.Game,
+.Tetris {
+    height: 100%;    
+}
+
 .App {
     font-family: sans-serif;
     text-align: center;
     color: #fff;
-    background-color: #406;
+    background-color: #4b0082;
     height: 100vh;
-    padding: 20px;
-    outline: 3px dashed lime !important;
 }

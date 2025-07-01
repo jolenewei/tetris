@@ -4,49 +4,78 @@
     left: 0;
     width: 100%;
     height: 100%;
-    backdrop-filter: blur(8px);
-    /* translucent over game */
-    background-color: rgba(0, 0, 0, 0.6);
-    /* semi-transparent overlay */
-    z-index: 100;
+    background-color: #4b0082;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    
-    .menu-title {
-        margin-top: 550px;
-        font-family: 'Orbitron', sans-serif;
-        font-size: 4rem;
-        color: white;
-        margin-bottom: 2rem;
-        text-shadow: 2px 2px #000;
-        letter-spacing: 2px;
+    overflow: hidden;
+    font-family: 'Orbitron', sans-serif;
+    z-index: 1;
+}
+
+.menu-title {
+    font-size: 5rem;
+    color: white;
+    text-shadow: 2px 2px #000;
+    z-index: 2;
+}
+
+.menu-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 2;
+}
+
+.high-score {
+    color: white;
+    font-size: 1.5rem;
+    margin: 1rem 0;
+}
+
+.start-button {
+    background-color: white;
+    color: black;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.falling-blocks {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.falling-block {
+    position: absolute;
+    top: -50px;
+    width: 150px;
+    height: 150px;
+    opacity: 0.4;
+    animation-name: fall;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    z-index: 0;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+@keyframes fall {
+    0% {
+        transform: translateY(-100px) rotate(0deg);
     }
 
-    .menu-info {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        .high-score {
-                color: white;
-                font-size: 1.2rem;
-                margin-bottom: 1rem;
-            }
-        
-            .start-button {
-                padding: 0.7rem 1.5rem;
-                font-size: 1.2rem;
-                border: none;
-                background: white;
-                color: black;
-                border-radius: 6px;
-                cursor: pointer;
-                transition: 0.3s;
-            }
-        
-            .start-button:hover {
-                background: #ddd;
-            }
+    100% {
+        transform: translateY(120vh) rotate(360deg);
     }
 }
