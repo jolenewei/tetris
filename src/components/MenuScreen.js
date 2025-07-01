@@ -17,16 +17,16 @@ const generatePositionAwayFromCenter = () => {
 const MenuScreen = ({ onStartGame, highScore, gameOver }) => {
   const [ fallingBlocks, setFallingBlocks ] = useState([]);
   useEffect(() => {
-    const generateFallingBlocks = (count) =>
+    const generateFallingBlocks = (count, isFirstLoad = false) =>
       Array.from({ length: count }, () => ({
         id: Math.random().toString(36).substring(2),
         left: generatePositionAwayFromCenter(),
-        delay: Math.random() * 5 + "s",
+        delay: isFirstLoad ? "0s" : Math.random() * 10 + "s",
         duration: 10 + Math.random() * 6 + "s",
         img: tetrominoImages[Math.floor(Math.random() * tetrominoImages.length)],
       }));
 
-      setFallingBlocks(generateFallingBlocks(4));
+      setFallingBlocks(generateFallingBlocks(4, true));
     }, []);
 
   return (

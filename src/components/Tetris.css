@@ -40,20 +40,17 @@
 
 .pause-button {
     position: absolute;
+    background: none;
     top: 20px;
-    right: 20px;
+    right: 30px;
     z-index: 10;
-    background-color: #55068f;
-    color: white;
     border: none;
-    padding: 0.5rem 1.2rem;
-    border-radius: 6px;
     font-size: 1rem;
     font-weight: bolder;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
-.pause-button:hover {
-    background-color: #444;
+.pause-icon {
+    width: 100px;
 }

@@ -36,7 +36,7 @@ const Tetris = ({ rows, columns }) => {
 
       {!menuVisible && !paused && (
         <button className="pause-button" onClick={() => setPaused(true)}>
-          | |
+          <img src="/assets/pause-button.png" alt="Pause" className="pause-icon"/>
         </button>
       )}
 

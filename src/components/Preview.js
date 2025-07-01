@@ -13,10 +13,15 @@ const Preview = ({ tetromino, index }) => {
 
   const style = { top: `${index * 15}vw` };
 
+  const centerPosition = {
+    row: Math.floor((4 - shape.length) / 2),
+    column: Math.floor((4 - shape[0].length) / 2)
+  };
+
   board.rows = transferToBoard({
     className,
     isOccupied: false,
-    position: { row: 0, column: 0 },
+    position: centerPosition,
     rows: board.rows,
     shape
   });
