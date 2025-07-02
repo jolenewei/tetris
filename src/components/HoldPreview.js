@@ -5,14 +5,12 @@ import { transferToBoard } from "../business/Tetrominoes";
 import BoardCell from "./BoardCell";
 
 const HoldPreview = ({ tetromino }) => {
-  if (!tetromino) return null;
-
-  const { shape, className } = tetromino;
   const board = buildBoard({ rows: 4, columns: 4 });
 
-  const centerPosition = {
-    row: Math.floor((4 - shape.length) / 2),
-    column: Math.floor((4 - shape[0].length) / 2),
+  if (tetromino && tetromino.shape && tetromino.className) {
+    const centerPosition = {
+        row: Math.floor((4 - shape.length) / 2),
+        column: Math.floor((4 - shape[0].length) / 2),
   };
 
   board.rows = transferToBoard({
@@ -22,9 +20,10 @@ const HoldPreview = ({ tetromino }) => {
     rows: board.rows,
     shape,
   });
+}
 
   return (
-    <div className="Preview" style={{ top: 0 }}>
+    <div className="HoldPreview" style={{ top: 0 }}>
       <div className="Preview-board">
         {board.rows.map((row, y) =>
           row.map((cell, x) => (

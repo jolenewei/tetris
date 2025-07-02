@@ -89,10 +89,15 @@ const GameInstance = ({ rows, columns, paused, setPaused, onGameOver, updateHigh
 
   return (
     <div className="game-container">
+      <div className="side-panel-left">
+        <div className="hold-label">HOLD</div>
+        <HoldPreview tetromino={hold} />
+      </div>
+
       <Board board={board} />
+
       <div className="side-panel">
         <GameStats gameStats={gameStats} />
-        <HoldPreview tetromino={hold} />
         <Previews tetrominoes={player?.tetrominoes || []} />
       </div>
       <GameController

@@ -1,11 +1,14 @@
 import React from "react";
-
 import Preview from '../components/Preview';
 
 const Previews = ({ tetrominoes }) => {
-  // We want everything except the last one
+  if (!Array.isArray(tetrominoes) || tetrominoes.length === 0) {
+    return null;
+  }
+
   const previewTetrominoes = tetrominoes
     .slice(1 - tetrominoes.length)
+    .filter(t => t && t.shape)
     .reverse();
 
   return (

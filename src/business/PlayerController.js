@@ -98,38 +98,33 @@ export const playerController = ({
   setHold,
   usedHold,
   setUsedHold,
-  resetPlayer,
+  resetPlayer
 }) => {
   if (!action) return;
 
   if (action === Action.Hold) {
-    if (usedHold) return;
+    if (usedHold || !player?.tetromino) return;
 
     setUsedHold(true);
 
     if (!hold) {
       setHold(player.tetromino);
-      resetPlayer();
+      resetPlayer(true);
     } else {
-      if (!hold.shape) {
-        console.warn("Invalid held piece: missing shape");
-        return;
-      }
-
       const temp = player.tetromino;
-
+      const heldPiece = hold;
+      
       setHold(temp);
 
-      setPlayer((prev) => ({
+      setPlayer(prev => ({
         ...prev,
-        tetromino: hold,
-        position: { row: 0, column: Math.floor(board[0].length / 2) - 2 },
-        tetrominoes: [...prev.tetrominoes],
+        tetromino: heldPiece,
+        position: { row: 0, column: 4 },
         collided: false,
         isFastDropping: false,
+        tetrominoes: [...prev.tetrominoes],
       }));
     }
-
     return;
   }
 
