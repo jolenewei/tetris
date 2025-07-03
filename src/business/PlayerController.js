@@ -1,30 +1,7 @@
 import { hasCollision, isWithinBoard } from "../business/Board";
 import { rotate } from "../business/Tetrominoes";
 import { Action } from "../business/Input";
-
-const attemptRotation = ({ board, player, setPlayer }) => {
-  const shape = rotate({
-    piece: player.tetromino.shape,
-    direction: 1,
-  });
-
-  const position = player.position;
-  const isValidRotation =
-    isWithinBoard({ board, position, shape }) &&
-    !hasCollision({ board, position, shape });
-
-  if (isValidRotation) {
-    setPlayer({
-      ...player,
-      tetromino: {
-        ...player.tetromino,
-        shape,
-      },
-    });
-  } else {
-    return false;
-  }
-};
+import { buildPlayer } from "../hooks/usePlayer";
 
 export const movePlayer = ({ delta, position, shape, board }) => {
   const desiredNextPosition = {
@@ -53,6 +30,28 @@ export const movePlayer = ({ delta, position, shape, board }) => {
   return { collided: isHit, nextPosition };
 };
 
+const attemptRotation = ({ board, player, setPlayer }) => {
+  const shape = rotate({
+    piece: player.tetromino.shape,
+    direction: 1,
+  });
+
+  const position = player.position;
+  const isValidRotation =
+    isWithinBoard({ board, position, shape }) &&
+    !hasCollision({ board, position, shape });
+
+  if (isValidRotation) {
+    setPlayer({
+      ...player,
+      tetromino: {
+        ...player.tetromino,
+        shape,
+      },
+    });
+  }
+};
+
 const attemptMovement = ({ board, action, player, setPlayer, setGameOver }) => {
   const delta = { row: 0, column: 0 };
   let isFastDropping = false;
@@ -74,10 +73,9 @@ const attemptMovement = ({ board, action, player, setPlayer, setGameOver }) => {
     board,
   });
 
-// if tetriminoes collide, game over
   const isGameOver = collided && player.position.row === 0;
   if (isGameOver) {
-    setGameOver(isGameOver);
+    setGameOver(true);
   }
 
   setPlayer({
@@ -98,32 +96,32 @@ export const playerController = ({
   setHold,
   usedHold,
   setUsedHold,
-  resetPlayer
+  resetPlayer,
 }) => {
   if (!action) return;
+
 
   if (action === Action.Hold) {
     if (usedHold || !player?.tetromino) return;
 
     setUsedHold(true);
+    const current = player.tetromino;
 
     if (!hold) {
-      setHold(player.tetromino);
+      setHold(current);
       resetPlayer(true);
     } else {
-      const temp = player.tetromino;
-      const heldPiece = hold;
-      
-      setHold(temp);
+      setHold(current);
 
-      setPlayer(prev => ({
-        ...prev,
-        tetromino: heldPiece,
-        position: { row: 0, column: 4 },
-        collided: false,
-        isFastDropping: false,
-        tetrominoes: [...prev.tetrominoes],
-      }));
+      setPlayer(prev => {
+        const updated = {
+          ...prev,
+          tetrominoes: [player.tetromino, ...prev.tetrominoes], // put current back into queue
+        };
+
+        const rebuilt = buildPlayer(updated, true);
+        return rebuilt;
+      });
     }
     return;
   }

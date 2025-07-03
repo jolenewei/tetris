@@ -7,7 +7,7 @@ const Previews = ({ tetrominoes }) => {
   }
 
   const previewTetrominoes = tetrominoes
-    .slice(1 - tetrominoes.length)
+    .slice(-3)
     .filter(t => t && t.shape)
     .reverse();
 

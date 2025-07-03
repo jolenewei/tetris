@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { randomTetromino } from "../business/Tetrominoes";
 
-const buildPlayer = (previous = null, skipNext = false) => {
+export const buildPlayer = (previous = null, skipNext = false) => {
   let tetrominoes;
 
   if (previous) {
@@ -16,7 +16,7 @@ const buildPlayer = (previous = null, skipNext = false) => {
     isFastDropping: false,
     position: { row: 0, column: 4 },
     tetrominoes,
-    tetromino: tetrominoes.pop(), // always valid
+    tetromino: tetrominoes.pop(),
   };
 };
 
