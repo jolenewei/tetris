@@ -30,6 +30,7 @@
     justify-content: space-between;
     align-items: flex-start;
     gap: 20px;
+    padding-right: 200px;
 }
 
 .side-panel {
